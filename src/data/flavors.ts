@@ -12,6 +12,7 @@ export function getFlavorDisplayInfo(flavorId: string): {
   displayName: string
   maker: string
   icon: string
+  iconKey: string
 } {
   const master = FLAVOR_MASTERS.find(f => f.id === flavorId)
   if (master) {
@@ -19,6 +20,7 @@ export function getFlavorDisplayInfo(flavorId: string): {
       displayName: master.displayName,
       maker: master.maker,
       icon: getIconEmoji(master.iconKey),
+      iconKey: master.iconKey,
     }
   }
   // カスタムフレーバー: ID から表示名を復元
@@ -27,5 +29,5 @@ export function getFlavorDisplayInfo(flavorId: string): {
     .split('-')
     .map(p => (p ? p.charAt(0).toUpperCase() + p.slice(1) : ''))
     .join(' ')
-  return { displayName: name || flavorId, maker: '', icon: getIconEmoji('custom') }
+  return { displayName: name || flavorId, maker: '', icon: getIconEmoji('custom'), iconKey: 'custom' }
 }

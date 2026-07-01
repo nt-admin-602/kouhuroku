@@ -1,9 +1,7 @@
 [
-  { "name": "なし（ダイレクト）",  "iconKey": "hms_none"    },
-  { "name": "Kaloud Lotus",    "iconKey": "hms_lotus"   },
-  { "name": "Kaloud Lotus+",   "iconKey": "hms_lotus"   },
-  { "name": "Kaloud Lotus II", "iconKey": "hms_lotus"   },
-  { "name": "Lotus B2",        "iconKey": "hms_lotus"   },
+  { "name": "なし（直のせ）",  "iconKey": "hms_none"    },
+  { "name": "Lotus",    "iconKey": "hms_lotus"   },
   { "name": "Provost",         "iconKey": "hms_provost" },
-  { "name": "AOT",             "iconKey": "hms_aot"     }
+  { "name": "SAPLI",         "iconKey": "hms_sapli" },
+  { "name": "folyo",             "iconKey": "hms_folyo"     }
 ]

@@ -1,6 +1,5 @@
 [
   { "value": "26mm_cube", "label": "26mm キューブ",  "iconKey": "charcoal_cube" },
   { "value": "22mm_cube", "label": "22mm キューブ",  "iconKey": "charcoal_cube" },
-  { "value": "22mm_flat", "label": "22mm フラット", "iconKey": "charcoal_flat" },
-  { "value": "custom",    "label": "カスタム",         "iconKey": "custom"        }
+  { "value": "22mm_flat", "label": "22mm フラット", "iconKey": "charcoal_flat" }
 ]

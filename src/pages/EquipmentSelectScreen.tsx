@@ -9,6 +9,7 @@ import {
   getCustomHmsList, addCustomHms,
 } from '../utils/userPrefs'
 import { getIconEmoji } from '../utils/icons'
+import { IconDisplay } from '../components/IconDisplay'
 
 const STEPS = ['フレーバー選択', '機材', 'パッキング', '保存'] as const
 
@@ -178,7 +179,9 @@ export function EquipmentSelectScreen({
         {/* ボウル */}
         <section className="section">
           <label className="form-label" htmlFor="bowl-select">
-            ボウル
+            ボウル{selectedBowl && selectedBowl !== '__custom__' && (
+              <> <IconDisplay iconKey={allBowls.find(b => b.name === selectedBowl)?.iconKey ?? 'bowl'} size={16} /></>
+            )}
           </label>
           <div className="select-wrapper">
             <select
@@ -212,7 +215,9 @@ export function EquipmentSelectScreen({
         {/* ヒートマネジメント */}
         <section className="section">
           <label className="form-label" htmlFor="hms-select">
-            ヒートマネジメント
+            ヒートマネジメント{selectedHms && selectedHms !== '__custom__' && (
+              <> <IconDisplay iconKey={allHmsList.find(h => h.name === selectedHms)?.iconKey ?? 'hms_none'} size={16} /></>
+            )}
           </label>
           <div className="select-wrapper">
             <select
@@ -329,7 +334,7 @@ export function EquipmentSelectScreen({
 
         {/* 炭 */}
         <section className="section">
-          <span className="form-label">炭の種類</span>
+          <span className="form-label">炭の種類 <IconDisplay iconKey={CHARCOAL_TYPES.find(t => t.value === charcoalType)?.iconKey ?? 'charcoal_cube'} size={16} /></span>
           <div className="select-wrapper">
             <select
               className="select-in-wrapper"

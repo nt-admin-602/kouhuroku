@@ -21,8 +21,8 @@
   "hms_provost":   { "emoji": "⚙",  "uri": null },
   "hms_aot":       { "emoji": "🌡", "uri": null },
 
-  "charcoal_cube": { "emoji": "♦",  "uri": null },
+  "charcoal_cube": { "emoji": "■",  "uri": null },
   "charcoal_flat": { "emoji": "▬",  "uri": null },
 
-  "custom":        { "emoji": "✏",  "uri": null }
+  "undefine":        { "emoji": "❓️",  "uri": null }
 }

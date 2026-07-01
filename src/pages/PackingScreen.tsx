@@ -7,6 +7,7 @@ import type {
   PackingConfig,
 } from '../types'
 import { StepIndicator } from '../components/StepIndicator'
+import { IconDisplay } from '../components/IconDisplay'
 import { getFlavorDisplayInfo } from '../data/flavors'
 
 const STEPS = ['フレーバー選択', '機材', 'パッキング', '保存'] as const
@@ -47,7 +48,6 @@ function getLayerLabel(idx: number, total: number): string {
 function initDirectPlacements(
   entries: FlavorEntry[],
   initialLayers?: Layer[],
-  initialMixes?: Mix[],
 ): Record<string, number | null> {
   const map: Record<string, number | null> = {}
   // デフォルト: 新規は全てレイヤー0
@@ -105,7 +105,7 @@ function buildResult(
         })),
       } satisfies Mix
     })
-    .filter((m): m is Mix => m !== null)
+    .filter((m): m is NonNullable<typeof m> => m !== null) as Mix[]
 
   const layersMap = new Map<number, LayerContent[]>()
 
@@ -150,7 +150,7 @@ export function PackingScreen({
 
   const [layerCount, setLayerCount] = useState(initLayerCount)
   const [directPlacement, setDirectPlacement] = useState<Record<string, number | null>>(() =>
-    initDirectPlacements(entries, initialLayers, initialMixes),
+    initDirectPlacements(entries, initialLayers),
   )
   const [mixDrafts, setMixDrafts] = useState<MixDraft[]>(() =>
     initMixDrafts(entries, initialMixes, initialLayers),
@@ -300,7 +300,7 @@ export function PackingScreen({
           {entries.length > 0 && (
             <ul className="packing-entry-list">
               {entries.map(entry => {
-                const { displayName, maker, icon } = getFlavorDisplayInfo(entry.flavorId)
+                const { displayName, maker, iconKey } = getFlavorDisplayInfo(entry.flavorId)
                 const currentDirectLayer = directPlacement[entry.id] ?? null
                 const mixUsedX10 = mixDrafts.reduce((sum, m) => sum + (m.grams[entry.id] ?? 0), 0)
                 const isFullyUsed = mixUsedX10 >= entry.gramsX10
@@ -310,7 +310,7 @@ export function PackingScreen({
                   <li key={entry.id} className="entry-card packing-entry-card">
                     {/* Row1: アイコン + 名前 + グラム数 */}
                     <div className="entry-row1">
-                      <span className="packing-entry-icon" aria-hidden="true">{icon}</span>
+                      <IconDisplay iconKey={iconKey} size={20} className="packing-entry-icon" />
                       <div className="entry-info">
                         {maker && <span className="entry-maker">{maker}</span>}
                         <span className="entry-name">{displayName}</span>
@@ -420,13 +420,13 @@ export function PackingScreen({
               ) : (
                 <ul className="mix-entry-list">
                   {mixEntries.map(entry => {
-                    const { icon, displayName, maker } = getFlavorDisplayInfo(entry.flavorId)
+                    const { iconKey, displayName, maker } = getFlavorDisplayInfo(entry.flavorId)
                     const gramsX10 = mix.grams[entry.id] ?? entry.gramsX10
                     const maxGramsX10 = entry.gramsX10
                     return (
                       <li key={entry.id} className="entry-card mix-entry-card">
                         <div className="entry-row1">
-                          <span className="packing-entry-icon" aria-hidden="true">{icon}</span>
+                          <IconDisplay iconKey={iconKey} size={20} className="packing-entry-icon" />
                           <div className="entry-info">
                             {maker && <span className="entry-maker">{maker}</span>}
                             <span className="entry-name">{displayName}</span>
@@ -481,12 +481,12 @@ export function PackingScreen({
                     <span className="layer-visual-label">{getLayerLabel(idx, layerCount)}</span>
                     <div className="layer-visual-contents">
                       {directFlavors.map(e => {
-                        const { icon, displayName } = getFlavorDisplayInfo(e.flavorId)
+                        const { iconKey, displayName } = getFlavorDisplayInfo(e.flavorId)
                         const usedInMix = mixDrafts.reduce((sum, m) => sum + (m.grams[e.id] ?? 0), 0)
                         const remaining = e.gramsX10 - usedInMix
                         return (
                           <span key={e.id} className="layer-flavor-chip">
-                            {icon} {displayName}
+                            <IconDisplay iconKey={iconKey} size={14} /> {displayName}
                             <span className="layer-chip-grams">{(remaining / 10).toFixed(1)}g</span>
                           </span>
                         )

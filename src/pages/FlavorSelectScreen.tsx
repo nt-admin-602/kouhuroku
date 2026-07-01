@@ -2,6 +2,7 @@ import { useState, useMemo } from 'react'
 import type { FlavorEntry, FlavorMaster } from '../types'
 import { FLAVOR_MASTERS, ALL_MAKERS, getFlavorDisplayInfo } from '../data/flavors'
 import { getIconEmoji } from '../utils/icons'
+import { IconDisplay } from '../components/IconDisplay'
 import {
   getCustomMakers, addCustomMaker,
   getCustomFlavorMasters, addCustomFlavorMaster,
@@ -24,11 +25,10 @@ function iconFromKey(key: string): string {
   return getIconEmoji(key)
 }
 
-function getFlavorIcon(flavorId: string): string {
-  if (!flavorId || flavorId === '__custom__') return UNSELECTED_ICON
+function getFlavorIconKey(flavorId: string): string | null {
+  if (!flavorId || flavorId === '__custom__') return null
   const master = FLAVOR_MASTERS.find(f => f.id === flavorId)
-  if (!master) return getIconEmoji('custom')
-  return getIconEmoji(master.iconKey)
+  return master?.iconKey ?? 'custom'
 }
 
 interface Props {
@@ -274,9 +274,12 @@ export function FlavorSelectScreen({
                     >
                       ✕
                     </button>
-                    <span className="entry-flavor-icon" aria-hidden="true">
-                      {getFlavorIcon(entry.flavorId)}
-                    </span>
+                    {(() => {
+                      const key = getFlavorIconKey(entry.flavorId)
+                      return key
+                        ? <IconDisplay iconKey={key} size={22} className="entry-flavor-icon" />
+                        : <span className="entry-flavor-icon" aria-hidden="true">{UNSELECTED_ICON}</span>
+                    })()}
                     <div className="entry-info">
                       {entry.maker && (
                         <span className="entry-maker">{entry.maker}</span>
