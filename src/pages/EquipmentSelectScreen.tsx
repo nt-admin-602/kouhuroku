@@ -41,7 +41,8 @@ function parseSteamTime(s: string): { minutes: number; seconds: number } {
 interface Props {
   initialEquipment?: EquipmentConfig
   initialRecipeName?: string
-  onBack: () => void
+  onBack: (equipment: EquipmentConfig) => void
+  onNext?: (equipment: EquipmentConfig) => void
   onSaveAndFinish: (equipment: EquipmentConfig, recipeName: string) => void
 }
 
@@ -49,6 +50,7 @@ export function EquipmentSelectScreen({
   initialEquipment,
   initialRecipeName,
   onBack,
+  onNext,
   onSaveAndFinish,
 }: Props) {
   // ボウル・ HMS: JSONプリセット + ユーザー追加分
@@ -463,7 +465,7 @@ export function EquipmentSelectScreen({
               value={recipeName}
               onChange={e => setRecipeName(e.target.value)}
               onKeyDown={e => e.key === 'Enter' && handleSave()}
-              placeholder="例: 耽溺 試作2"
+              placeholder="ミックスに名前をつけてください"
               autoFocus
             />
           </div>
@@ -489,7 +491,7 @@ export function EquipmentSelectScreen({
             <>
               <button
                 className="btn btn-cancel-sm"
-                onClick={onBack}
+                onClick={() => onBack(buildEquipment())}
               >
                 ← フレーバー
               </button>
@@ -499,6 +501,14 @@ export function EquipmentSelectScreen({
               >
                 レシピを保存
               </button>
+              {onNext && (
+                <button
+                  className="btn btn-next"
+                  onClick={() => onNext(buildEquipment())}
+                >
+                  パッキングへ
+                </button>
+              )}
             </>
           )}
         </div>

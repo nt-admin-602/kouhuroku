@@ -1020,3 +1020,422 @@ ul {
 .recipe-card {
   cursor: pointer;
 }
+
+/* ===== packing screen ===== */
+
+/* ラジオボタングループ: 折り返し対応 */
+.radio-btn-group-wrap {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0;
+  border: 1px solid var(--border-bright);
+  border-radius: var(--radius);
+  overflow: hidden;
+}
+
+.radio-btn-group-wrap .radio-btn + .radio-btn {
+  border-left: 1px solid var(--border-bright);
+}
+
+/* フレーバーレイヤー割り当てリスト */
+.packing-entry-list {
+  list-style: none;
+  padding: 0;
+  margin: 10px 0 0;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.packing-entry-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 10px;
+  background: var(--surface-raised, rgba(255,255,255,0.04));
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+}
+
+.packing-entry-icon {
+  font-size: 20px;
+  flex-shrink: 0;
+  width: 28px;
+  text-align: center;
+}
+
+.packing-entry-info {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-width: 0;
+}
+
+.packing-entry-info .entry-maker {
+  font-size: 10px;
+  color: var(--text-muted);
+  letter-spacing: 0.04em;
+}
+
+.packing-entry-info .entry-name {
+  font-size: 13px;
+  color: var(--text);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* レイヤーボタン群 */
+.packing-layer-ctrl {
+  display: flex;
+  gap: 0;
+  border: 1px solid var(--border-bright);
+  border-radius: var(--radius);
+  overflow: hidden;
+  flex-shrink: 0;
+}
+
+.packing-layer-btn {
+  background: transparent;
+  border: none;
+  border-radius: 0;
+  color: var(--text-dim);
+  font-size: 11px;
+  padding: 4px 10px;
+  cursor: pointer;
+  transition: background 0.1s, color 0.1s;
+  font-family: inherit;
+  letter-spacing: 0.04em;
+}
+
+.packing-layer-btn + .packing-layer-btn {
+  border-left: 1px solid var(--border-bright);
+}
+
+.packing-layer-btn-active {
+  background: var(--cyan-dim);
+  color: var(--cyan);
+  box-shadow: inset 0 0 0 1px var(--cyan);
+}
+
+/* レイヤー断面ビジュアル */
+.layer-visual {
+  margin-top: 14px;
+  border: 1px solid var(--border-bright);
+  border-radius: var(--radius);
+  overflow: hidden;
+}
+
+.layer-visual-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  padding: 8px 12px;
+  border-bottom: 1px solid var(--border);
+}
+
+.layer-visual-row:last-child {
+  border-bottom: none;
+}
+
+.layer-visual-label {
+  font-size: 11px;
+  color: var(--text-muted);
+  min-width: 22px;
+  padding-top: 2px;
+  text-align: center;
+  letter-spacing: 0.04em;
+  flex-shrink: 0;
+}
+
+.layer-visual-contents {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  flex: 1;
+}
+
+.layer-flavor-chip {
+  background: var(--cyan-dim);
+  color: var(--cyan);
+  border: 1px solid var(--cyan);
+  border-radius: 20px;
+  font-size: 11px;
+  padding: 2px 10px;
+  letter-spacing: 0.04em;
+  white-space: nowrap;
+}
+
+.layer-empty {
+  font-size: 11px;
+  color: var(--text-muted);
+  font-style: italic;
+  opacity: 0.6;
+}
+
+/* ミックスボタン */
+.packing-mix-btn {
+  color: var(--magenta);
+  border-left: 1px solid var(--border-bright);
+  font-weight: bold;
+  letter-spacing: 0;
+}
+
+.packing-mix-btn-active {
+  background: var(--magenta-dim, rgba(255, 0, 170, 0.15));
+  color: var(--magenta);
+  box-shadow: inset 0 0 0 1px var(--magenta);
+}
+
+.packing-layer-btn-disabled {
+  opacity: 0.25;
+  cursor: not-allowed;
+}
+
+/* 配置コントロール (直置き + ミックスボタン横並び) — 2行目用に上書き済み */
+.packing-placement-ctrl {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  align-items: center;
+  flex-shrink: 0;
+}
+
+/* 各ボタングループ (直置き / ミックX) */
+.packing-ctrl-group {
+  display: flex;
+  gap: 0;
+  border: 1px solid var(--border-bright);
+  border-radius: var(--radius);
+  overflow: hidden;
+  flex-shrink: 0;
+}
+
+.packing-ctrl-group .packing-layer-btn + .packing-layer-btn {
+  border-left: 1px solid var(--border-bright);
+}
+
+/* M+ 新ミックスボタン */
+.packing-mix-new-btn {
+  border: 1px solid rgba(255, 0, 170, 0.5);
+  border-radius: var(--radius);
+  font-weight: bold;
+  font-size: 11px;
+  padding: 4px 10px;
+  color: var(--magenta) !important;
+  opacity: 0.65;
+  cursor: pointer;
+  background: transparent;
+  transition: background 0.1s, opacity 0.1s;
+}
+
+.packing-mix-new-btn:active {
+  opacity: 1;
+  background: var(--magenta-dim, rgba(255, 0, 170, 0.15));
+}
+
+/* ミックスグループカード */
+.mix-group-card {
+  margin-top: 14px;
+  border: 1px solid var(--magenta);
+  border-radius: var(--radius);
+  background: var(--magenta-dim, rgba(255, 0, 170, 0.08));
+  overflow: hidden;
+}
+
+.mix-group-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px 12px;
+  border-bottom: 1px solid rgba(255, 0, 170, 0.3);
+}
+
+.mix-group-title {
+  font-size: 12px;
+  font-weight: bold;
+  color: var(--magenta);
+  letter-spacing: 0.1em;
+}
+
+.mix-group-flavors {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  padding: 10px 12px;
+}
+
+/* ミックスカード (複数ミックス対応) */
+.mix-card {
+  border: 1px solid var(--magenta) !important;
+  background: rgba(255, 0, 170, 0.05) !important;
+}
+
+.mix-card-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid rgba(255, 0, 170, 0.25);
+  margin-bottom: 10px;
+}
+
+.mix-card-name-input {
+  flex: 1;
+  min-width: 0;
+  background: transparent;
+  border: none;
+  border-bottom: 1px solid var(--magenta);
+  color: var(--magenta);
+  font-family: inherit;
+  font-size: 13px;
+  font-weight: bold;
+  letter-spacing: 0.08em;
+  padding: 2px 4px;
+  outline: none;
+}
+
+.mix-card-name-input:focus {
+  border-bottom-color: var(--cyan);
+  color: var(--text);
+}
+
+.mix-delete-btn {
+  background: transparent;
+  border: 1px solid var(--danger, #ff2d6b);
+  color: var(--danger, #ff2d6b);
+  border-radius: var(--radius);
+  font-size: 14px;
+  width: 28px;
+  height: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  padding: 0;
+  cursor: pointer;
+  transition: background 0.1s;
+}
+
+.mix-delete-btn:active {
+  background: rgba(255, 45, 107, 0.2);
+}
+
+.mix-entry-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.mix-entry-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+/* グラムステッパー (ミックス内) */
+.mix-gram-ctrl {
+  flex-shrink: 0;
+}
+
+.mix-gram-val {
+  min-width: 54px !important;
+  font-size: 13px !important;
+}
+
+.mix-empty-note {
+  font-size: 11px;
+  color: var(--text-muted);
+  font-style: italic;
+  margin: 4px 0 0;
+  line-height: 1.5;
+}
+
+/* ミックス内エントリーカード (entry-card と同スタイルベース) */
+.mix-entry-card {
+  background: rgba(0, 0, 0, 0.2);
+}
+
+/* パッキング画面フレーバーカード */
+.packing-entry-card {
+  padding: 10px 12px 8px;
+}
+
+.packing-entry-card .entry-row1 {
+  margin-bottom: 8px;
+}
+
+/* グラム数ブロック (合計 + 残量 縦並び) */
+.packing-gram-block {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 2px;
+  flex-shrink: 0;
+}
+
+/* 残量・使い切りラベル */
+.packing-gram-sub {
+  font-size: 10px;
+  color: var(--text-muted);
+  letter-spacing: 0.04em;
+}
+
+.packing-gram-exhausted {
+  color: var(--magenta);
+  font-weight: bold;
+}
+
+/* グラム数バッジが使い切り時はマゼンタ */
+.entry-grams.packing-gram-used-all {
+  color: var(--magenta);
+  border-color: var(--magenta);
+  text-shadow: none;
+}
+
+/* 残量表示時にバッジ幅を広げる */
+.packing-entry-card .entry-grams {
+  min-width: 80px;
+  font-size: 13px;
+}
+
+/* チップ内グラム数 */
+.layer-chip-grams {
+  margin-left: 4px;
+  font-size: 10px;
+  opacity: 0.8;
+  font-weight: normal;
+  letter-spacing: 0;
+}
+
+/* 配置コントロール行 (2行目) */
+.packing-placement-ctrl {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  align-items: center;
+}
+
+.mix-gram-max-hint {
+  text-align: right;
+  font-size: 10px;
+  color: var(--text-muted);
+  letter-spacing: 0.04em;
+  margin-top: 4px;
+  opacity: 0.7;
+}
+
+/* ミックスチップ（断面ビジュアル用） */
+.layer-mix-chip {
+  background: var(--magenta-dim, rgba(255, 0, 170, 0.15));
+  color: var(--magenta);
+  border: 1px solid var(--magenta);
+  border-radius: 20px;
+  font-size: 11px;
+  padding: 2px 10px;
+  letter-spacing: 0.04em;
+  white-space: nowrap;
+}

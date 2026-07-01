@@ -70,6 +70,10 @@ export type EquipmentConfig = {
   heatupTime?: string
 }
 
+export type PackingConfig = {
+  note?: string
+}
+
 export type Recipe = {
   id: string
   rootRecipeId: string
@@ -79,6 +83,7 @@ export type Recipe = {
   mixes: Mix[]
   layers: Layer[]
   equipment?: EquipmentConfig
+  packing?: PackingConfig
   isLatest: boolean
   parentVersionId?: string
   createdAt: string
@@ -92,5 +97,6 @@ export type RecipeDraft = {
   mixes: Mix[]
   layers: Layer[]
   equipment?: EquipmentConfig
+  packing?: PackingConfig
   updatedAt: string
 }

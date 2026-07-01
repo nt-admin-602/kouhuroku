@@ -322,7 +322,7 @@ export function FlavorSelectScreen({
               value={recipeName}
               onChange={e => setRecipeName(e.target.value)}
               onKeyDown={e => e.key === 'Enter' && handleSaveAndFinish()}
-              placeholder="例: 耽溺 試作2"
+              placeholder="ミックスに名前をつけてください"
               autoFocus
             />
           </div>
