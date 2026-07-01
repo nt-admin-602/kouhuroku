@@ -1,0 +1,9 @@
+[
+  { "name": "なし（ダイレクト）",  "iconKey": "hms_none"    },
+  { "name": "Kaloud Lotus",    "iconKey": "hms_lotus"   },
+  { "name": "Kaloud Lotus+",   "iconKey": "hms_lotus"   },
+  { "name": "Kaloud Lotus II", "iconKey": "hms_lotus"   },
+  { "name": "Lotus B2",        "iconKey": "hms_lotus"   },
+  { "name": "Provost",         "iconKey": "hms_provost" },
+  { "name": "AOT",             "iconKey": "hms_aot"     }
+]

@@ -1,6 +1,11 @@
 import { useState, useMemo } from 'react'
-import type { FlavorEntry } from '../types'
-import { FLAVOR_MASTERS, ALL_MAKERS, FLAVOR_ICON_MAP, getFlavorDisplayInfo } from '../data/flavors'
+import type { FlavorEntry, FlavorMaster } from '../types'
+import { FLAVOR_MASTERS, ALL_MAKERS, getFlavorDisplayInfo } from '../data/flavors'
+import { getIconEmoji } from '../utils/icons'
+import {
+  getCustomMakers, addCustomMaker,
+  getCustomFlavorMasters, addCustomFlavorMaster,
+} from '../utils/userPrefs'
 import { StepIndicator } from '../components/StepIndicator'
 
 const STEPS = ['フレーバー選択', '機材', 'パッキング', '保存'] as const
@@ -16,14 +21,14 @@ const STEP_DELTAS = [-10, -5, -1, 1, 5, 10] as const
 const UNSELECTED_ICON = '○'
 
 function iconFromKey(key: string): string {
-  return FLAVOR_ICON_MAP[key] ?? '✨'
+  return getIconEmoji(key)
 }
 
 function getFlavorIcon(flavorId: string): string {
   if (!flavorId || flavorId === '__custom__') return UNSELECTED_ICON
   const master = FLAVOR_MASTERS.find(f => f.id === flavorId)
-  if (!master) return '✨'
-  return FLAVOR_ICON_MAP[master.iconKey] ?? '✨'
+  if (!master) return getIconEmoji('custom')
+  return getIconEmoji(master.iconKey)
 }
 
 interface Props {
@@ -57,6 +62,14 @@ export function FlavorSelectScreen({
     () => (initialEntries ?? []).map(toEntryDisplay),
   )
 
+  // ユーザー追加済みのカスタムデータ
+  const [extraMakers, setExtraMakers] = useState<string[]>(
+    () => getCustomMakers(),
+  )
+  const [extraFlavorMasters, setExtraFlavorMasters] = useState<FlavorMaster[]>(
+    () => getCustomFlavorMasters(),
+  )
+
   // 保存モード
   const [saveMode, setSaveMode] = useState(false)
   const [recipeName, setRecipeName] = useState(initialRecipeName ?? '')
@@ -64,10 +77,24 @@ export function FlavorSelectScreen({
   const effectiveMaker =
     selectedMaker === '__custom__' ? customMaker.trim() : selectedMaker
 
+  // プリセット + ユーザー追加分を合成
+  const allFlavorMasters = useMemo(
+    () => [...FLAVOR_MASTERS, ...extraFlavorMasters],
+    [extraFlavorMasters],
+  )
+  const allMakers = useMemo(
+    () => [
+      ...ALL_MAKERS,
+      ...extraFlavorMasters.map(f => f.maker).filter(Boolean),
+      ...extraMakers,
+    ].filter((m, i, arr) => arr.indexOf(m) === i),
+    [extraMakers, extraFlavorMasters],
+  )
+
   const filteredFlavors = useMemo(() => {
-    if (!selectedMaker || selectedMaker === '__custom__') return FLAVOR_MASTERS
-    return FLAVOR_MASTERS.filter(f => f.maker === selectedMaker)
-  }, [selectedMaker])
+    if (!selectedMaker || selectedMaker === '__custom__') return allFlavorMasters
+    return allFlavorMasters.filter(f => f.maker === selectedMaker)
+  }, [selectedMaker, allFlavorMasters])
 
   const canAdd =
     selectedFlavorId !== '' &&
@@ -98,8 +125,19 @@ export function FlavorSelectScreen({
         .replace(/^-|-$/g, '')}`
       displayName = name
       maker = mak
+      // カスタムフレーバーを永続化
+      const newMaster: FlavorMaster = { id: flavorId, maker: mak, displayName: name, iconKey: 'default' }
+      if (!extraFlavorMasters.find(f => f.id === flavorId)) {
+        addCustomFlavorMaster(newMaster)
+        setExtraFlavorMasters(prev => [...prev, newMaster])
+      }
+      // カスタムメーカーを永続化
+      if (selectedMaker === '__custom__' && mak && !extraMakers.includes(mak) && !ALL_MAKERS.includes(mak)) {
+        addCustomMaker(mak)
+        setExtraMakers(prev => [...prev, mak])
+      }
     } else {
-      const master = FLAVOR_MASTERS.find(f => f.id === selectedFlavorId)!
+      const master = allFlavorMasters.find(f => f.id === selectedFlavorId)!
       flavorId = master.id
       displayName = master.displayName
       maker = master.maker
@@ -160,7 +198,7 @@ export function FlavorSelectScreen({
               onChange={e => handleMakerChange(e.target.value)}
             >
               <option value="">○ — メーカーを選択 —</option>
-              {ALL_MAKERS.map(m => (
+              {allMakers.map(m => (
                 <option key={m} value={m}>◆ {m}</option>
               ))}
               <option value="__custom__">✏ その他（直接入力）</option>

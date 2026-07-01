@@ -1,0 +1,28 @@
+{
+  "apple":         { "emoji": "🍎", "uri": null },
+  "grape":         { "emoji": "🍇", "uri": null },
+  "berry":         { "emoji": "🫐", "uri": null },
+  "mint":          { "emoji": "🌿", "uri": null },
+  "lemon":         { "emoji": "🍋", "uri": null },
+  "peach":         { "emoji": "🍑", "uri": null },
+  "watermelon":    { "emoji": "🍉", "uri": null },
+  "grapefruit":    { "emoji": "🍊", "uri": null },
+  "caramel":       { "emoji": "🍮", "uri": null },
+  "vanilla":       { "emoji": "🫙", "uri": null },
+  "cinnamon":      { "emoji": "🌶", "uri": null },
+  "royaltea":      { "emoji": "🍵", "uri": null },
+  "cola":          { "emoji": "🥤", "uri": null },
+  "default":       { "emoji": "✨", "uri": null },
+
+  "bowl":          { "emoji": "🫙", "uri": null },
+
+  "hms_none":      { "emoji": "○",  "uri": null },
+  "hms_lotus":     { "emoji": "🪷", "uri": null },
+  "hms_provost":   { "emoji": "⚙",  "uri": null },
+  "hms_aot":       { "emoji": "🌡", "uri": null },
+
+  "charcoal_cube": { "emoji": "♦",  "uri": null },
+  "charcoal_flat": { "emoji": "▬",  "uri": null },
+
+  "custom":        { "emoji": "✏",  "uri": null }
+}
