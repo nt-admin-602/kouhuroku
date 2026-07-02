@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useMemo } from 'react'
 import type { EquipmentConfig } from '../types'
 import { StepIndicator } from '../components/StepIndicator'
 import bowlsData from '../data/bowls.json'
@@ -8,8 +8,8 @@ import {
   getCustomBowls, addCustomBowl,
   getCustomHmsList, addCustomHms,
 } from '../utils/userPrefs'
-import { getIconEmoji } from '../utils/icons'
 import { IconDisplay } from '../components/IconDisplay'
+import { IconSelect, type SelectOption } from '../components/IconSelect'
 
 const STEPS = ['フレーバー選択', '機材', 'パッキング', '保存'] as const
 
@@ -124,6 +124,22 @@ export function EquipmentSelectScreen({
   const effectiveHms =
     selectedHms === '__custom__' ? customHms.trim() : selectedHms
 
+  const bowlOptions = useMemo((): SelectOption[] => [
+    { value: '', label: '— 選択してください —' },
+    ...allBowls.map(b => ({ value: b.name, label: b.name, iconKey: b.iconKey })),
+    { value: '__custom__', label: 'その他（直接入力）', iconKey: 'default' },
+  ], [allBowls])
+
+  const hmsOptions = useMemo((): SelectOption[] => [
+    { value: '', label: '— 選択してください —' },
+    ...allHmsList.map(h => ({ value: h.name, label: h.name, iconKey: h.iconKey })),
+    { value: '__custom__', label: 'その他（直接入力）', iconKey: 'default' },
+  ], [allHmsList])
+
+  const charcoalOptions = useMemo((): SelectOption[] =>
+    CHARCOAL_TYPES.map(t => ({ value: t.value, label: t.label, iconKey: t.iconKey })),
+  [])
+
   const buildEquipment = (): EquipmentConfig => {
     const eq: EquipmentConfig = {}
     if (effectiveBowl) eq.bowl = effectiveBowl
@@ -183,23 +199,12 @@ export function EquipmentSelectScreen({
               <> <IconDisplay iconKey={allBowls.find(b => b.name === selectedBowl)?.iconKey ?? 'bowl'} size={16} /></>
             )}
           </label>
-          <div className="select-wrapper">
-            <select
+          <IconSelect
               id="bowl-select"
-              className="select-in-wrapper"
               value={selectedBowl}
-              onChange={e => {
-                setSelectedBowl(e.target.value)
-                setCustomBowl('')
-              }}
-            >
-              <option value="">— 選択してください —</option>
-              {allBowls.map(b => (
-                <option key={b.name} value={b.name}>{getIconEmoji(b.iconKey)} {b.name}</option>
-              ))}
-              <option value="__custom__">✏ その他（直接入力）</option>
-            </select>
-          </div>
+              options={bowlOptions}
+              onChange={v => { setSelectedBowl(v); setCustomBowl('') }}
+            />
           {selectedBowl === '__custom__' && (
             <input
               className="input input-mt"
@@ -219,23 +224,12 @@ export function EquipmentSelectScreen({
               <> <IconDisplay iconKey={allHmsList.find(h => h.name === selectedHms)?.iconKey ?? 'hms_none'} size={16} /></>
             )}
           </label>
-          <div className="select-wrapper">
-            <select
+          <IconSelect
               id="hms-select"
-              className="select-in-wrapper"
               value={selectedHms}
-              onChange={e => {
-                setSelectedHms(e.target.value)
-                setCustomHms('')
-              }}
-            >
-              <option value="">— 選択してください —</option>
-              {allHmsList.map(h => (
-                <option key={h.name} value={h.name}>{getIconEmoji(h.iconKey)} {h.name}</option>
-              ))}
-              <option value="__custom__">✏ その他（直接入力）</option>
-            </select>
-          </div>
+              options={hmsOptions}
+              onChange={v => { setSelectedHms(v); setCustomHms('') }}
+            />
           {selectedHms === '__custom__' && (
             <input
               className="input input-mt"
@@ -335,23 +329,11 @@ export function EquipmentSelectScreen({
         {/* 炭 */}
         <section className="section">
           <span className="form-label">炭の種類 <IconDisplay iconKey={CHARCOAL_TYPES.find(t => t.value === charcoalType)?.iconKey ?? 'charcoal_cube'} size={16} /></span>
-          <div className="select-wrapper">
-            <select
-              className="select-in-wrapper"
+          <IconSelect
               value={charcoalType}
-              onChange={e =>
-                setCharcoalType(
-                  e.target.value as '26mm_cube' | '22mm_cube' | '22mm_flat' | 'custom',
-                )
-              }
-            >
-              {CHARCOAL_TYPES.map(t => (
-                <option key={t.value} value={t.value}>
-                  {getIconEmoji(t.iconKey)} {t.label}
-                </option>
-              ))}
-            </select>
-          </div>
+              options={charcoalOptions}
+              onChange={v => setCharcoalType(v as '26mm_cube' | '22mm_cube' | '22mm_flat' | 'custom')}
+            />
           {charcoalType === 'custom' && (
             <input
               className="input input-mt"

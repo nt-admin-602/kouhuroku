@@ -12,7 +12,7 @@
   "cinnamon":      { "emoji": "🌶", "uri": null },
   "royaltea":      { "emoji": "🍵", "uri": null },
   "cola":          { "emoji": "🥤", "uri": null },
-  "default":       { "emoji": "✨", "uri": null },
+  "default":       { "emoji": "✨", "uri": "/icons/default.png" },
 
   "bowl":          { "emoji": "🫙", "uri": null },
 

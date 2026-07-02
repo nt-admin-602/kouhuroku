@@ -1,8 +1,8 @@
 import { useState, useMemo } from 'react'
 import type { FlavorEntry, FlavorMaster } from '../types'
 import { FLAVOR_MASTERS, ALL_MAKERS, getFlavorDisplayInfo } from '../data/flavors'
-import { getIconEmoji } from '../utils/icons'
 import { IconDisplay } from '../components/IconDisplay'
+import { IconSelect, type SelectOption } from '../components/IconSelect'
 import {
   getCustomMakers, addCustomMaker,
   getCustomFlavorMasters, addCustomFlavorMaster,
@@ -20,10 +20,6 @@ type EntryDisplay = FlavorEntry & {
 const STEP_DELTAS = [-10, -5, -1, 1, 5, 10] as const
 
 const UNSELECTED_ICON = '○'
-
-function iconFromKey(key: string): string {
-  return getIconEmoji(key)
-}
 
 function getFlavorIconKey(flavorId: string): string | null {
   if (!flavorId || flavorId === '__custom__') return null
@@ -95,6 +91,18 @@ export function FlavorSelectScreen({
     if (!selectedMaker || selectedMaker === '__custom__') return allFlavorMasters
     return allFlavorMasters.filter(f => f.maker === selectedMaker)
   }, [selectedMaker, allFlavorMasters])
+
+  const flavorOptions = useMemo((): SelectOption[] => [
+    { value: '', label: '— フレーバーを選択 —', prefix: '○' },
+    ...filteredFlavors.map(f => ({ value: f.id, label: f.displayName, iconKey: f.iconKey })),
+    { value: '__custom__', label: 'その他（直接入力）', iconKey: 'default' },
+  ], [filteredFlavors])
+
+  const makerOptions = useMemo((): SelectOption[] => [
+    { value: '', label: '— メーカーを選択 —', prefix: '○' },
+    ...allMakers.map(m => ({ value: m, label: m, prefix: '◆' })),
+    { value: '__custom__', label: 'その他（直接入力）', iconKey: 'default' },
+  ], [allMakers])
 
   const canAdd =
     selectedFlavorId !== '' &&
@@ -190,20 +198,12 @@ export function FlavorSelectScreen({
         {/* メーカー選択 */}
         <section className="section">
           <label className="form-label" htmlFor="maker-select">メーカー</label>
-          <div className="select-wrapper">
-            <select
+          <IconSelect
               id="maker-select"
-              className="select-in-wrapper"
               value={selectedMaker}
-              onChange={e => handleMakerChange(e.target.value)}
-            >
-              <option value="">○ — メーカーを選択 —</option>
-              {allMakers.map(m => (
-                <option key={m} value={m}>◆ {m}</option>
-              ))}
-              <option value="__custom__">✏ その他（直接入力）</option>
-            </select>
-          </div>
+              options={makerOptions}
+              onChange={handleMakerChange}
+            />
           {selectedMaker === '__custom__' && (
             <input
               className="input input-mt"
@@ -220,23 +220,12 @@ export function FlavorSelectScreen({
         <section className="section">
           <label className="form-label" htmlFor="flavor-select">フレーバー</label>
           <div className="input-row">
-            <div className="select-wrapper">
-              <select
-                id="flavor-select"
-                className="select-in-wrapper"
-                value={selectedFlavorId}
-                onChange={e => {
-                  setSelectedFlavorId(e.target.value)
-                  setCustomFlavorName('')
-                }}
-              >
-                <option value="">○ — フレーバーを選択 —</option>
-                {filteredFlavors.map(f => (
-                  <option key={f.id} value={f.id}>{iconFromKey(f.iconKey)} {f.displayName}</option>
-                ))}
-                <option value="__custom__">✏ その他（直接入力）</option>
-              </select>
-            </div>
+            <IconSelect
+              id="flavor-select"
+              value={selectedFlavorId}
+              options={flavorOptions}
+              onChange={v => { setSelectedFlavorId(v); setCustomFlavorName('') }}
+            />
             <button className="btn btn-add" onClick={handleAdd} disabled={!canAdd}>
               追加
             </button>
