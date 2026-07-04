@@ -10,7 +10,7 @@ import { StepIndicator } from '../components/StepIndicator'
 import { IconDisplay } from '../components/IconDisplay'
 import { getFlavorDisplayInfo } from '../data/flavors'
 
-const STEPS = ['フレーバー選択', '機材', 'パッキング', '保存'] as const
+const STEPS = ['フレーバー選択', '機材', 'パッキング'] as const
 const STEP_DELTAS = [-10, -5, -1, 1, 5, 10] as const
 
 // ---- ローカル型 ----
@@ -28,6 +28,7 @@ interface Props {
   initialMixes?: Mix[]
   initialRecipeName?: string
   onBack: (packing: PackingConfig, layers: Layer[], mixes: Mix[]) => void
+  onGoToFlavor: (packing: PackingConfig, layers: Layer[], mixes: Mix[]) => void
   onSaveAndFinish: (
     packing: PackingConfig,
     layers: Layer[],
@@ -142,6 +143,7 @@ export function PackingScreen({
   initialMixes,
   initialRecipeName,
   onBack,
+  onGoToFlavor,
   onSaveAndFinish,
 }: Props) {
   const initLayerCount = initialLayers?.length
@@ -271,8 +273,17 @@ export function PackingScreen({
   )
 
   return (
-    <div className="screen">
-      <StepIndicator steps={STEPS} currentStep={2} />
+    <>
+      <StepIndicator
+        steps={STEPS}
+        currentStep={2}
+        onStepClick={step => {
+          const packing: PackingConfig = note.trim() ? { note: note.trim() } : {}
+          const { layers, mixes } = buildResult(entries, directPlacement, mixDrafts, layerCount)
+          if (step === 1) onBack(packing, layers, mixes)
+          if (step === 0) onGoToFlavor(packing, layers, mixes)
+        }}
+      />
 
       <div className="screen-content">
         {/* レイヤー構成 + フレーバー配置 */}
@@ -561,6 +572,6 @@ export function PackingScreen({
           )}
         </div>
       </div>
-    </div>
+    </>
   )
 }

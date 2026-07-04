@@ -100,3 +100,18 @@ export type RecipeDraft = {
   packing?: PackingConfig
   updatedAt: string
 }
+
+export type SessionMemo = {
+  id: string
+  elapsedSeconds: number
+  text: string
+}
+
+export type HookahSession = {
+  id: string
+  recipeId: string
+  recipeName: string
+  startedAt: string   // ISO string
+  endedAt?: string    // ISO string — undefined if still running
+  memos: SessionMemo[]
+}

@@ -9,7 +9,7 @@ import {
 } from '../utils/userPrefs'
 import { StepIndicator } from '../components/StepIndicator'
 
-const STEPS = ['フレーバー選択', '機材', 'パッキング', '保存'] as const
+const STEPS = ['フレーバー選択', '機材', 'パッキング'] as const
 
 // 画面内部で表示に必要な情報を付加した拡張型
 type EntryDisplay = FlavorEntry & {
@@ -113,8 +113,13 @@ export function FlavorSelectScreen({
 
   const handleMakerChange = (value: string) => {
     setSelectedMaker(value)
-    setSelectedFlavorId('')
-    setCustomFlavorName('')
+    if (value === '__custom__') {
+      // メーカーがその他の場合、フレーバーも自動でその他に設定
+      setSelectedFlavorId('__custom__')
+    } else {
+      setSelectedFlavorId('')
+      setCustomFlavorName('')
+    }
   }
 
   const handleAdd = () => {
@@ -191,8 +196,14 @@ export function FlavorSelectScreen({
   }
 
   return (
-    <div className="screen">
-      <StepIndicator steps={STEPS} currentStep={0} />
+    <>
+      <StepIndicator
+        steps={STEPS}
+        currentStep={0}
+        onStepClick={step => {
+          if (step === 1 && hasEntries) onNext(toFlavorEntries())
+        }}
+      />
 
       <div className="screen-content">
         {/* メーカー選択 */}
@@ -220,17 +231,19 @@ export function FlavorSelectScreen({
         <section className="section">
           <label className="form-label" htmlFor="flavor-select">フレーバー</label>
           <div className="input-row">
-            <IconSelect
-              id="flavor-select"
-              value={selectedFlavorId}
-              options={flavorOptions}
-              onChange={v => { setSelectedFlavorId(v); setCustomFlavorName('') }}
-            />
+            {selectedMaker !== '__custom__' && (
+              <IconSelect
+                id="flavor-select"
+                value={selectedFlavorId}
+                options={flavorOptions}
+                onChange={v => { setSelectedFlavorId(v); setCustomFlavorName('') }}
+              />
+            )}
             <button className="btn btn-add" onClick={handleAdd} disabled={!canAdd}>
               追加
             </button>
           </div>
-          {selectedFlavorId === '__custom__' && (
+          {(selectedFlavorId === '__custom__' || selectedMaker === '__custom__') && (
             <input
               className="input input-mt"
               value={customFlavorName}
@@ -357,6 +370,6 @@ export function FlavorSelectScreen({
           )}
         </div>
       </div>
-    </div>
+    </>
   )
 }

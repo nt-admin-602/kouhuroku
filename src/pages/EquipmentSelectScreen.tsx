@@ -11,7 +11,7 @@ import {
 import { IconDisplay } from '../components/IconDisplay'
 import { IconSelect, type SelectOption } from '../components/IconSelect'
 
-const STEPS = ['フレーバー選択', '機材', 'パッキング', '保存'] as const
+const STEPS = ['フレーバー選択', '機材', 'パッキング'] as const
 
 type EquipItem = { name: string; iconKey: string }
 
@@ -188,8 +188,15 @@ export function EquipmentSelectScreen({
   }
 
   return (
-    <div className="screen">
-      <StepIndicator steps={STEPS} currentStep={1} />
+    <>
+      <StepIndicator
+        steps={STEPS}
+        currentStep={1}
+        onStepClick={step => {
+          if (step === 0) onBack(buildEquipment())
+          if (step === 2 && onNext) onNext(buildEquipment())
+        }}
+      />
 
       <div className="screen-content">
         {/* ボウル */}
@@ -500,6 +507,6 @@ export function EquipmentSelectScreen({
           )}
         </div>
       </div>
-    </div>
+    </>
   )
 }

@@ -57,14 +57,12 @@ ul {
   display: flex;
   flex-direction: column;
   min-height: 100dvh;
-  max-width: 480px;
-  margin: 0 auto;
 }
 
 .screen-content {
   flex: 1;
   padding: var(--gap);
-  padding-bottom: 100px;
+  padding-bottom: 160px;
 }
 
 .screen-title {
@@ -111,6 +109,19 @@ ul {
 
 .step-item.done {
   color: var(--text-dim);
+}
+
+/* クリッカブルなステップボタン */
+button.step-item {
+  background: transparent;
+  font-family: inherit;
+  cursor: pointer;
+}
+
+button.step-item:hover {
+  color: var(--text);
+  border-color: var(--border);
+  background: rgba(255, 255, 255, 0.04);
 }
 
 .step-item.active {
@@ -553,10 +564,10 @@ ul {
   text-shadow: var(--glow-cyan);
 }
 
-/* ===== bottom area (fixed) ===== */
+/* bottom-area は BottomNav (56px) の上に乗せる */
 .bottom-area {
   position: fixed;
-  bottom: 0;
+  bottom: 56px;
   left: 0;
   right: 0;
   background: var(--bg);
@@ -686,7 +697,7 @@ ul {
 .list-content {
   flex: 1;
   padding: var(--gap);
-  padding-bottom: 72px;
+  padding-bottom: 88px;
   overflow-y: auto;
 }
 
@@ -777,6 +788,19 @@ ul {
   color: var(--text);
   margin-bottom: 10px;
   line-height: 1.3;
+}
+
+/* セッション開始ボタンをネームと同行に並べる */
+.recipe-name-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.recipe-name-row .recipe-name {
+  flex: 1;
+  min-width: 0;
+  margin-bottom: 0;
 }
 
 .recipe-card-stats {
@@ -1112,6 +1136,71 @@ ul {
 /* recipe-card clickable */
 .recipe-card {
   cursor: pointer;
+  position: relative;
+  overflow: hidden;
+}
+
+/* ===== カードのフレーバーアイコン背景 ===== */
+.card-flavor-bg {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.recipe-card > *:not(.card-flavor-bg) {
+  position: relative;
+  z-index: 1;
+}
+
+.session-card > *:not(.card-flavor-bg) {
+  position: relative;
+  z-index: 1;
+}
+
+.card-flavor-bg-icon {
+  opacity: 0.15;
+  flex-shrink: 0;
+  font-size: 72px;
+  line-height: 1;
+  width: 72px;
+  height: 72px;
+  object-fit: contain;
+  filter: saturate(0.9) brightness(1.1);
+}
+
+.card-flavor-bg-icon + .card-flavor-bg-icon {
+  margin-left: -18px;
+}
+
+/* レシピカードのセッション開始ボタン行 */
+.recipe-card-actions {
+  margin-top: 10px;
+  display: flex;
+}
+
+.btn-start-session {
+  background: var(--cyan-dim);
+  color: var(--cyan);
+  border: 1px solid var(--cyan);
+  font-size: 11px;
+  font-weight: bold;
+  padding: 5px 14px;
+  letter-spacing: 0.06em;
+  border-radius: var(--radius);
+  cursor: pointer;
+  transition: background 0.1s;
+  font-family: inherit;
+}
+
+.btn-start-session:active {
+  background: rgba(0, 229, 255, 0.25);
 }
 
 /* ===== packing screen ===== */
@@ -1531,4 +1620,323 @@ ul {
   padding: 2px 10px;
   letter-spacing: 0.04em;
   white-space: nowrap;
+}
+
+/* ===== common app header ===== */
+.app-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 14px var(--gap) 12px;
+  border-bottom: 1px solid var(--border);
+  flex-shrink: 0;
+  background: var(--bg);
+}
+
+.app-header-title {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+/* ===== session list ===== */
+.session-section {
+  margin-bottom: 24px;
+}
+
+.session-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.session-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 12px 14px;
+  cursor: pointer;
+  transition: border-color 0.12s;
+  position: relative;
+  overflow: hidden;
+}
+
+.session-card:active {
+  border-color: var(--border-bright);
+}
+
+.session-card--active {
+  border-color: var(--cyan);
+  box-shadow: 0 0 0 1px var(--cyan-dim);
+}
+
+.session-card-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 6px;
+}
+
+.session-status-dot {
+  font-size: 9px;
+  color: var(--cyan);
+  text-shadow: var(--glow-cyan);
+  animation: blink 1.4s step-start infinite;
+}
+
+@keyframes blink {
+  50% { opacity: 0.2; }
+}
+
+.session-recipe-name {
+  flex: 1;
+  font-size: 15px;
+  font-weight: bold;
+  color: var(--text);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.session-card-body {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 4px;
+}
+
+.session-timer-live {
+  font-size: 22px;
+  font-weight: bold;
+  color: var(--cyan);
+  text-shadow: var(--glow-cyan);
+  letter-spacing: 0.08em;
+  font-variant-numeric: tabular-nums;
+}
+
+.session-duration {
+  font-size: 18px;
+  font-weight: bold;
+  color: var(--text-dim);
+  letter-spacing: 0.06em;
+  font-variant-numeric: tabular-nums;
+}
+
+.session-memo-count {
+  font-size: 11px;
+  color: var(--text-muted);
+  border: 1px solid var(--border-bright);
+  padding: 1px 6px;
+  border-radius: var(--radius);
+}
+
+.session-started-at {
+  font-size: 10px;
+  color: var(--text-muted);
+  letter-spacing: 0.04em;
+}
+
+/* ===== session detail ===== */
+.session-detail-subheader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px var(--gap);
+  border-bottom: 1px solid var(--border);
+  flex-shrink: 0;
+}
+
+.btn-end-session {
+  background: rgba(255, 45, 107, 0.15);
+  color: var(--danger);
+  border-color: var(--danger);
+  font-size: 12px;
+  font-weight: bold;
+  padding: 6px 14px;
+}
+
+.btn-end-session:active {
+  background: rgba(255, 45, 107, 0.28);
+}
+
+.session-detail-hero {
+  text-align: center;
+  padding: 20px 0 24px;
+  border-bottom: 1px solid var(--border);
+  margin-bottom: 24px;
+}
+
+.session-detail-recipe {
+  font-size: 14px;
+  color: var(--text-dim);
+  letter-spacing: 0.06em;
+  margin-bottom: 8px;
+}
+
+.session-detail-timer {
+  font-size: 48px;
+  font-weight: bold;
+  color: var(--text-dim);
+  letter-spacing: 0.06em;
+  font-variant-numeric: tabular-nums;
+  line-height: 1.1;
+  margin-bottom: 8px;
+}
+
+.session-detail-timer--active {
+  color: var(--cyan);
+  text-shadow: var(--glow-cyan);
+}
+
+.session-detail-meta {
+  font-size: 11px;
+  color: var(--text-muted);
+  letter-spacing: 0.04em;
+}
+
+/* ===== memo input ===== */
+.session-memo-input-row {
+  display: flex;
+  gap: 8px;
+  align-items: flex-start;
+}
+
+.session-memo-textarea {
+  resize: none;
+  line-height: 1.5;
+  padding: 8px 12px;
+}
+
+.session-memo-add-btn {
+  flex-shrink: 0;
+  align-self: stretch;
+}
+
+/* ===== memo list ===== */
+.memo-list {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.memo-item {
+  display: flex;
+  gap: 10px;
+  align-items: flex-start;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 8px 12px;
+}
+
+.memo-elapsed {
+  font-size: 10px;
+  color: var(--cyan);
+  border: 1px solid var(--cyan);
+  border-radius: var(--radius);
+  padding: 1px 6px;
+  white-space: nowrap;
+  flex-shrink: 0;
+  letter-spacing: 0.04em;
+  margin-top: 1px;
+}
+
+.memo-text {
+  font-size: 13px;
+  color: var(--text);
+  line-height: 1.5;
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+
+/* ===== recipe picker modal ===== */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.65);
+  display: flex;
+  align-items: flex-end;
+  z-index: 500;
+}
+
+.modal-sheet {
+  width: 100%;
+  max-width: 480px;
+  margin: 0 auto;
+  background: var(--surface-2);
+  border-top: 1px solid var(--border-bright);
+  border-radius: var(--radius) var(--radius) 0 0;
+  max-height: 70dvh;
+  display: flex;
+  flex-direction: column;
+  padding-bottom: calc(56px + env(safe-area-inset-bottom, 0));
+}
+
+.modal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 14px var(--gap);
+  border-bottom: 1px solid var(--border);
+  flex-shrink: 0;
+}
+
+.modal-title {
+  font-size: 13px;
+  font-weight: bold;
+  color: var(--text);
+  letter-spacing: 0.06em;
+}
+
+.modal-close {
+  background: transparent;
+  border: none;
+  color: var(--text-muted);
+  font-size: 14px;
+  cursor: pointer;
+  padding: 4px;
+  line-height: 1;
+}
+
+.modal-close:active {
+  color: var(--text);
+}
+
+.modal-empty {
+  font-size: 12px;
+  color: var(--text-muted);
+  padding: 24px var(--gap);
+  text-align: center;
+  line-height: 1.8;
+}
+
+.modal-recipe-list {
+  overflow-y: auto;
+  flex: 1;
+}
+
+.modal-recipe-item {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  padding: 14px var(--gap);
+  border-bottom: 1px solid var(--border);
+  cursor: pointer;
+  transition: background 0.1s;
+}
+
+.modal-recipe-item:active {
+  background: var(--surface);
+}
+
+.modal-recipe-name {
+  font-size: 15px;
+  color: var(--text);
+  font-weight: bold;
+}
+
+.modal-recipe-meta {
+  font-size: 11px;
+  color: var(--text-muted);
+  letter-spacing: 0.04em;
 }

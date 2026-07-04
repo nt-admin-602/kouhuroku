@@ -1,11 +1,25 @@
 import { useState, useEffect } from 'react'
-import type { Recipe } from '../types'
+import type { FlavorEntry, Recipe } from '../types'
 import { getLatestRecipes, deleteRecipeById } from '../utils/storage'
-import { BottomNav } from '../components/BottomNav'
+import { getFlavorDisplayInfo } from '../data/flavors'
+import { IconDisplay } from '../components/IconDisplay'
+
+function FlavorIconsBg({ entries }: { entries: FlavorEntry[] }) {
+  const keys = entries.map(e => getFlavorDisplayInfo(e.flavorId).iconKey).slice(0, 5)
+  if (keys.length === 0) return null
+  return (
+    <div className="card-flavor-bg" aria-hidden="true">
+      {keys.map((key, i) => (
+        <IconDisplay key={i} iconKey={key} size={72} className="card-flavor-bg-icon" />
+      ))}
+    </div>
+  )
+}
 
 interface Props {
   onCreateNew: () => void
   onSelectRecipe: (recipe: Recipe) => void
+  onStartSession: (recipeId: string, recipeName: string) => void
   /** リスト再取得トリガー（保存後に変わる） */
   refreshKey?: number
 }
@@ -20,7 +34,7 @@ function formatDate(iso: string): string {
   return `${y}/${mo}/${day} ${h}:${m}`
 }
 
-export function RecipeListScreen({ onCreateNew, onSelectRecipe, refreshKey }: Props) {
+export function RecipeListScreen({ onCreateNew, onSelectRecipe, onStartSession, refreshKey }: Props) {
   const [recipes, setRecipes] = useState<Recipe[]>([])
 
   useEffect(() => {
@@ -33,16 +47,7 @@ export function RecipeListScreen({ onCreateNew, onSelectRecipe, refreshKey }: Pr
   }
 
   return (
-    <div className="screen">
-      {/* ヘッダー */}
-      <header className="list-header">
-        <div className="list-header-title">
-          <h1 className="app-title">香譜録</h1>
-        </div>
-        <span className="app-icon-badge" aria-hidden="true">🌿</span>
-      </header>
-
-      <div className="list-content">
+    <div className="list-content">
         {/* 新規作成ボタン */}
         <button className="btn btn-create-new" onClick={onCreateNew}>
           ＋ 新規作成
@@ -60,10 +65,6 @@ export function RecipeListScreen({ onCreateNew, onSelectRecipe, refreshKey }: Pr
           ) : (
             <ul className="recipe-list">
               {recipes.map(recipe => {
-                const totalGramsX10 = recipe.entries.reduce(
-                  (s, e) => s + e.gramsX10,
-                  0,
-                )
                 return (
                   <li
                     key={recipe.id}
@@ -73,6 +74,7 @@ export function RecipeListScreen({ onCreateNew, onSelectRecipe, refreshKey }: Pr
                     tabIndex={0}
                     onKeyDown={e => e.key === 'Enter' && onSelectRecipe(recipe)}
                   >
+                    <FlavorIconsBg entries={recipe.entries} />
                     <div className="recipe-card-header">
                       <div className="recipe-card-meta">
                         <span className="recipe-version">v{recipe.version}</span>
@@ -87,15 +89,15 @@ export function RecipeListScreen({ onCreateNew, onSelectRecipe, refreshKey }: Pr
                       </button>
                     </div>
 
-                    <p className="recipe-name">{recipe.name}</p>
-
-                    <div className="recipe-card-stats">
-                      <span className="recipe-stat">
-                        🌿 {recipe.entries.length}フレーバー
-                      </span>
-                      <span className="recipe-stat recipe-stat-grams">
-                        {(totalGramsX10 / 10).toFixed(1)}g
-                      </span>
+                    <div className="recipe-name-row">
+                      <p className="recipe-name">{recipe.name}</p>
+                      <button
+                        className="btn btn-start-session"
+                        onClick={e => { e.stopPropagation(); onStartSession(recipe.id, recipe.name) }}
+                        aria-label="セッション開始"
+                      >
+                        ▶ 開始
+                      </button>
                     </div>
                   </li>
                 )
@@ -103,9 +105,6 @@ export function RecipeListScreen({ onCreateNew, onSelectRecipe, refreshKey }: Pr
             </ul>
           )}
         </section>
-      </div>
-
-      <BottomNav active="home" onHome={() => {}} onCreate={onCreateNew} />
     </div>
   )
 }

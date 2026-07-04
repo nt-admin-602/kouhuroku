@@ -29,7 +29,7 @@ export function RecipeDetailScreen({ recipe, onBack, onDeleted }: Props) {
   }
 
   return (
-    <div className="screen">
+    <>
       {/* ヘッダー */}
       <header className="detail-header">
         <button className="btn-back" onClick={onBack}>← 戻る</button>
@@ -80,6 +80,6 @@ export function RecipeDetailScreen({ recipe, onBack, onDeleted }: Props) {
           </button>
         </div>
       </div>
-    </div>
+    </>
   )
 }
